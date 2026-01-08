@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Эйлер и Петербург</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=33635a00-99c7-4905-a828-31c13be8ae5c"></script>
+</head>
+<body>
+
+<h1>Интерактивная карта Леонарда Эйлера</h1>
+
+<div id="map"></div>
+
+<script>
+    const places = {{ places | tojson }};
+</script>
+
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+
+</body>
+</html>
