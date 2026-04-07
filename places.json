@@ -1,0 +1,119 @@
+[
+    {
+        "name": "Здание Петербургской Академии наук",
+        "coords": [59.9448, 30.3073],
+        "description": "Основное место работы Эйлера в Петербурге, где он написал 550 научных работ.",
+        "task": "Эйлер вывел формулу для суммы первых n натуральных чисел: S = n(n+1)/2. Если Эйлер публиковал в среднем 10 работ в год в течение 30 лет работы в Академии, найдите общее количество его публикаций за этот период, используя формулу арифметической прогрессии.",
+        "imagesBuilding": [
+            "img/i.jpeg",
+            "img/i.jpeg",
+            "img/i.jpeg"
+        ],
+        "taskImage": "https://latex.codecogs.com/svg.latex?%5Csum_%7Bk%3D1%7D%5E%7Bn%7Dk%3D%5Cfrac%7Bn%28n%2B1%29%7D%7B2%7D",
+        "solutionImage": "",
+        "solutionText": "Решение: за 30 лет, публикуя в среднем 10 работ в год, общее число работ = 30 × 10 = 300."
+    },
+    {
+        "name": "Дом Эйлера на Васильевском острове",
+        "coords": [59.9483, 30.2594],
+        "description": "Здесь Эйлер жил со своей семьёй и продолжал научную работу даже после потери зрения.",
+        "task": "Эйлер открыл тождество: e^(iπ) + 1 = 0. Используя формулу Эйлера e^(ix) = cos(x) + i·sin(x), докажите, что при x = π получается знаменитое тождество.",
+        "imagesBuilding": [
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Euler%27s_house_in_Saint_Petersburg.jpg/320px-Euler%27s_house_in_Saint_Petersburg.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Euler_house_memorial_plaque.jpg/320px-Euler_house_memorial_plaque.jpg"
+        ],
+        "taskImage": "https://wikimedia.org/api/rest_v1/media/math/render/svg/2d20a9a2aa83b2cc1c47a3b6491f7fcd1033a10a",
+        "solutionImage": "https://wikimedia.org/api/rest_v1/media/math/render/svg/7be8f4c9fe9c7a1b7fc71a9c4555e26aa4e7e746",
+        "solutionText": "Решение: e^(iπ) = cos(π) + i·sin(π) = -1 + i·0 = -1. Тогда e^(iπ) + 1 = 0."
+    },
+    {
+        "name": "Кунсткамера",
+        "coords": [59.9415, 30.3046],
+        "description": "Научный музей, где Эйлер участвовал в дискуссиях и исследованиях.",
+        "task": "Эйлер исследовал ряд: 1 + 1/4 + 1/9 + 1/16 + ... + 1/n². Он доказал, что сумма этого ряда при n → ∞ равна π²/6. Найдите сумму первых 4 членов этого ряда с точностью до сотых.",
+        "imagesBuilding": [
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Kunstkamera_from_Neva.jpg/320px-Kunstkamera_from_Neva.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/SPb_Kunstkamera_2.jpg/320px-SPb_Kunstkamera_2.jpg"
+        ],
+        "taskImage": "https://latex.codecogs.com/svg.latex?%5Csum_%7Bn%3D1%7D%5E%7B%5Cinfty%7D%20%5Cfrac%7B1%7D%7Bn%5E2%7D%3D%5Cfrac%7B%5Cpi%5E2%7D%7B6%7D",
+        "solutionImage": "https://latex.codecogs.com/svg.latex?1%2B%5Cfrac%7B1%7D%7B4%7D%2B%5Cfrac%7B1%7D%7B9%7D%2B%5Cfrac%7B1%7D%7B16%7D%3D%5Cfrac%7B205%7D%7B144%7D%5Capprox%201.42",
+        "solutionText": "Вычисляем: 1 + 0.25 = 1.25; +1/9≈0.11111 → 1.36111; +1/16=0.0625 → сумма ≈1.42361. Округляем до сотых: 1.42."
+    },
+    {
+        "name": "Академическая гимназия",
+        "coords": [59.9429, 30.3051],
+        "description": "Учебное заведение, где Эйлер участвовал в подготовке будущих учёных.",
+        "task": "Эйлер разработал задачу о ходе коня. На шахматной доске 8×8 конь стоит в угловом поле a1. Можно ли, двигаясь ходом коня, посетить каждое поле доски ровно один раз и вернуться в исходную точку? Ответ обоснуйте.",
+        "imagesBuilding": [
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Spb_Academy_2.jpg/320px-Spb_Academy_2.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Academic_Gymnasium_SPb.jpg/320px-Academic_Gymnasium_SPb.jpg"
+        ],
+        "taskImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Knight%27s_tour.svg/300px-Knight%27s_tour.svg.png",
+        "solutionImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Closed_knight%27s_tour.svg/300px-Closed_knight%27s_tour.svg.png",
+        "solutionText": "Решение: Замкнутый маршрут коня (тур) на доске 8×8 существует. Из углового поля a1 можно построить замкнутый обход."
+    },
+    {
+        "name": "Университетская набережная",
+        "coords": [59.9432, 30.3075],
+        "description": "Исторический центр научной жизни Петербурга XVIII века.",
+        "task": "Эйлер исследовал граф с 5 вершинами (зданиями на набережной), соединёнными рёбрами-маршрутами со степенями вершин: 3, 3, 4, 2, 2. Существует ли в этом графе эйлеров цикл?",
+        "imagesBuilding": [
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/University_embankment_01.jpg/320px-University_embankment_01.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/University_embankment_SPb.jpg/320px-University_embankment_SPb.jpg"
+        ],
+        "taskImage": "https://latex.codecogs.com/svg.latex?%5Ctext%7BСтепени%7D%3A%203%2C3%2C4%2C2%2C2",
+        "solutionImage": "https://latex.codecogs.com/svg.latex?%5Ctext%7BНет%2C%20т.к.%20есть%20нечётные%20степени%20(3%20и%203)%7D",
+        "solutionText": "Теорема Эйлера: эйлеров цикл существует, когда все вершины имеют чётную степень. Здесь две нечётные вершины, значит цикла нет."
+    },
+    {
+        "name": "Памятник Эйлеру у Академии художеств",
+        "coords": [59.9386, 30.3158],
+        "description": "Памятник, установленный в честь вклада Эйлера в мировую науку.",
+        "task": "Для прямоугольного параллелепипеда (6 граней, 8 вершин) найдите количество рёбер, используя формулу Эйлера В - Р + Г = 2.",
+        "imagesBuilding": [
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Euler_monument_SPb.jpg/320px-Euler_monument_SPb.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Euler_monument_Academy_arts.jpg/320px-Euler_monument_Academy_arts.jpg"
+        ],
+        "taskImage": "https://latex.codecogs.com/svg.latex?V%20-%20E%20%2B%20F%20%3D%202",
+        "solutionImage": "https://latex.codecogs.com/svg.latex?8%20-%20R%20%2B%206%20%3D%202%20%5CRightarrow%20R%20%3D%2012",
+        "solutionText": "Решение: В = 8, Г = 6, формула: 8 - Р + 6 = 2 ⇒ 14 - Р = 2 ⇒ Р = 12."
+    },
+    {
+        "name": "Линии Васильевского острова",
+        "coords": [59.9500, 30.2700],
+        "description": "Регулярная планировка, отражающая рациональный подход к организации пространства.",
+        "task": "Граф с 7 вершинами, где каждая вершина имеет степень 3. Можно ли пройти по всем рёбрам ровно один раз и вернуться в исходную точку?",
+        "imagesBuilding": [
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Vasilyevsky_Island_Lines.jpg/320px-Vasilyevsky_Island_Lines.jpg"
+        ],
+        "taskImage": "https://latex.codecogs.com/svg.latex?%5Ctext%7B7%20вершин%2C%20степень%20каждой%3D3%7D",
+        "solutionImage": "https://latex.codecogs.com/svg.latex?%5Ctext%7BНет%2C%20все%20степени%20нечётные%20(7%20нечётных%20вершин)%7D",
+        "solutionText": "Для эйлерова цикла все вершины должны иметь чётную степень. Здесь все степени нечётные → невозможно."
+    },
+    {
+        "name": "Стрелка Васильевского острова",
+        "coords": [59.9449, 30.3070],
+        "description": "Место слияния Большой и Малой Невы, символизирующее соединение идей.",
+        "task": "Граф между 4 участками суши: A-B (2 моста), A-C (1), A-D (3), B-C (1), B-D (2), C-D (1). Существует ли путь по каждому мосту ровно один раз?",
+        "imagesBuilding": [
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Spit_of_Vasilievsky_Island.jpg/320px-Spit_of_Vasilievsky_Island.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Strelka_VO_panorama.jpg/320px-Strelka_VO_panorama.jpg"
+        ],
+        "taskImage": "https://latex.codecogs.com/svg.latex?%5Ctext%7BСтепени%3A%20A%3D6%2CB%3D5%2CC%3D3%2CD%3D6%7D",
+        "solutionImage": "https://latex.codecogs.com/svg.latex?%5Ctext%7BДа%2C%20эйлеров%20путь%20существует%20(2%20нечётные%20вершины)%7D",
+        "solutionText": "Нечётных вершин ровно 2 (B и C) → эйлеров путь существует."
+    },
+    {
+        "name": "Биржевая площадь",
+        "coords": [59.9460, 30.3085],
+        "description": "Место, где располагались здания Академии наук времён Эйлера.",
+        "task": "Задача о семи кёнигсбергских мостах. Граф имеет степени вершин: 3, 3, 3, 5. Докажите, что пройти по всем мостам ровно один раз невозможно.",
+        "imagesBuilding": [
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2d/Exchange_Square_SPB.jpg/320px-Exchange_Square_SPB.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Spb_exchange.jpg/320px-Spb_exchange.jpg"
+        ],
+        "taskImage": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Koenigsberg_graph.svg/300px-Koenigsberg_graph.svg.png",
+        "solutionImage": "https://latex.codecogs.com/svg.latex?%5Ctext%7B4%20нечётные%20вершины%20%3D%3E%20нет%20пути%7D",
+        "solutionText": "Для эйлерова пути нужно 0 или 2 нечётные вершины. Здесь все 4 нечётные → невозможно."
+    }
+]

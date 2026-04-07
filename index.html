@@ -2,113 +2,475 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>По следам Эйлера: Интерактивная карта</title>
     <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&apikey=33635a00-99c7-4905-a828-31c13be8ae5c" type="text/javascript"></script>
-
     <style>
-        body { font-family: 'Times New Roman', serif; margin: 0; background: #f0f2f5; }
-        header { background: #2c3e50; color: white; padding: 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-        #map { width: 95%; height: 600px; margin: 20px auto; border-radius: 10px; border: 2px solid #34495e; }
-        .footer { text-align: center; font-size: 0.9em; color: #7f8c8d; margin-bottom: 20px; }
-        .hint { color: #2980b9; font-weight: bold; margin-top: 10px; display: block; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Times New Roman', 'Georgia', serif;
+            background: #e9ecef;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3c4c, #2c5a6e);
+            color: white;
+            padding: 1rem 1.2rem;
+            text-align: center;
+            border-bottom: 3px solid #f4c542;
+            flex-shrink: 0;
+        }
+
+        header h1 {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+            opacity: 0.9;
+        }
+
+        /* Карта занимает ВСЁ свободное пространство */
+        .map-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: stretch;
+            justify-content: stretch;
+            padding: 15px;
+            min-height: 0;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+            border-radius: 20px;
+            border: 3px solid white;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+        }
+
+        .footer {
+            text-align: center;
+            background: #1e2a36;
+            color: #cddde9;
+            padding: 10px;
+            font-size: clamp(0.65rem, 2.5vw, 0.85rem);
+            flex-shrink: 0;
+        }
+
+        /* АДАПТИВНЫЙ БАЛУН */
+        .custom-balloon {
+            max-width: min(420px, 85vw);
+            font-family: 'Segoe UI', 'Times New Roman', serif;
+            overflow: visible;
+        }
+
+        .custom-balloon h3 {
+            color: #1e5f6e;
+            border-left: 5px solid #f4c542;
+            padding-left: 12px;
+            margin-bottom: 10px;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+        }
+
+        .custom-balloon p {
+            margin: 8px 0;
+            line-height: 1.4;
+            font-size: clamp(0.8rem, 3vw, 0.95rem);
+        }
+
+        .task-box {
+            background: #f8f9fc;
+            padding: 10px;
+            border-radius: 14px;
+            margin: 12px 0;
+            border-left: 4px solid #2c7da0;
+            font-size: clamp(0.75rem, 2.8vw, 0.9rem);
+        }
+
+        .image-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 8px 0;
+            margin: 10px 0;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .image-scroll::-webkit-scrollbar {
+            height: 5px;
+        }
+
+        .image-card {
+            background: #fef9e6;
+            border-radius: 16px;
+            padding: 8px;
+            text-align: center;
+            flex-shrink: 0;
+            width: min(130px, 35vw);
+            max-width: 150px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .image-card:hover {
+            transform: scale(1.02);
+        }
+
+        .image-card img {
+            width: 100%;
+            height: auto;
+            max-height: min(110px, 30vw);
+            object-fit: contain;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            background: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .image-caption {
+            font-size: clamp(0.6rem, 2.5vw, 0.7rem);
+            margin-top: 6px;
+            color: #2c5a6e;
+            font-weight: bold;
+        }
+
+        .btn-solution {
+            background: #2c7da0;
+            border: none;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: clamp(0.8rem, 3vw, 0.9rem);
+            transition: 0.2s;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .btn-solution:hover {
+            background: #1f5e7a;
+        }
+
+        .solution-area {
+            background: #eef2f7;
+            border-radius: 18px;
+            padding: 12px;
+            margin-top: 12px;
+            display: none;
+            border-top: 2px dashed #f4c542;
+        }
+
+        .solution-area.show {
+            display: block;
+        }
+
+        .solution-text {
+            background: white;
+            padding: 10px;
+            border-radius: 14px;
+            margin-bottom: 10px;
+            font-size: clamp(0.75rem, 2.8vw, 0.9rem);
+        }
+
+        .hint {
+            color: #2c7da0;
+            font-size: clamp(0.65rem, 2.5vw, 0.8rem);
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .image-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+            justify-content: center;
+        }
+
+        /* Адаптация для телефонов */
+        @media (max-width: 768px) {
+            .image-card {
+                width: min(120px, 40vw);
+            }
+
+            .image-card img {
+                max-height: min(100px, 35vw);
+            }
+
+            .custom-balloon {
+                max-width: 85vw;
+            }
+
+            .btn-solution {
+                padding: 8px 12px;
+            }
+
+            .map-wrapper {
+                padding: 10px;
+            }
+
+            #map {
+                min-height: 400px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .image-card {
+                width: min(110px, 42vw);
+            }
+
+            .image-card img {
+                max-height: min(90px, 38vw);
+            }
+
+            .task-box {
+                padding: 8px;
+            }
+
+            .solution-area {
+                padding: 8px;
+            }
+        }
+
+        /* Стили для балуна Яндекса */
+        .ymaps-2-1-1-balloon__content {
+            overflow: visible !important;
+            max-height: none !important;
+        }
+
+        .ymaps-2-1-1-balloon {
+            max-height: 85vh;
+        }
+
+        .ymaps-2-1-1-balloon__panel {
+            max-height: 85vh;
+            overflow-y: auto !important;
+        }
+
+        /* Крупные кнопки на телефонах */
+        @media (max-width: 768px) {
+            .ymaps-2-1-1-zoom__plus,
+            .ymaps-2-1-1-zoom__minus {
+                width: 40px !important;
+                height: 40px !important;
+            }
+        }
+
+        /* На больших мониторах карта больше */
+        @media (min-width: 1920px) {
+            .map-wrapper {
+                padding: 20px;
+            }
+
+            #map {
+                border-radius: 28px;
+            }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Леонард Эйлер в Санкт-Петербурге</h1>
-    <p>Интерактивный проект: история и математика</p>
+    <h1>📐 Леонард Эйлер в Санкт-Петербурге</h1>
+    <p>Интерактивный проект: история, математика и визуальные подсказки</p>
 </header>
 
-<div id="map"></div>
-
-<div class="footer">
-    <p>Автор: Коротков Илья, 10А класс. Школа №416</p>
+<div class="map-wrapper">
+    <div id="map"></div>
 </div>
 
-<script type="text/javascript">
-    const PLACES = [
-        {
-        "name": "Здание Петербургской Академии наук",
-        "coords": [59.9448, 30.3073],
-        "description": "Основное место работы Эйлера в Петербурге, где он написал 550 научных работ.",
-        "task": "Эйлер вывел формулу для суммы первых n натуральных чисел: S = n(n+1)/2. Если Эйлер публиковал в среднем 10 работ в год в течение 30 лет работы в Академии, найдите общее количество его публикаций за этот период, используя формулу арифметической прогрессии."
-    },
-    {
-        "name": "Дом Эйлера на Васильевском острове",
-        "coords": [59.9483, 30.2594],
-        "description": "Здесь Эйлер жил со своей семьёй и продолжал научную работу даже после потери зрения.",
-        "task": "Эйлер открыл тождество: e^(iπ) + 1 = 0. Используя формулу Эйлера e^(ix) = cos(x) + i·sin(x), докажите, что при x = π получается знаменитое тождество."
-    },
-    {
-        "name": "Кунсткамера",
-        "coords": [59.9415, 30.3046],
-        "description": "Научный музей, где Эйлер участвовал в дискуссиях и исследованиях.",
-        "task": "Эйлер исследовал ряд: 1 + 1/4 + 1/9 + 1/16 + ... + 1/n². Он доказал, что сумма этого ряда при n → ∞ равна π²/6. Найдите сумму первых 4 членов этого ряда с точностью до сотых."
-    },
-    {
-        "name": "Академическая гимназия",
-        "coords": [59.9429, 30.3051],
-        "description": "Учебное заведение, где Эйлер участвовал в подготовке будущих учёных.",
-        "task": "Эйлер разработал задачу о ходе коня. На шахматной доске 8×8 конь стоит в угловом поле a1. Можно ли, двигаясь ходом коня, посетить каждое поле доски ровно один раз и вернуться в исходную точку? Ответ обоснуйте."
-    },
-    {
-        "name": "Университетская набережная",
-        "coords": [59.9432, 30.3075],
-        "description": "Исторический центр научной жизни Петербурга XVIII века.",
-        "task": "Эйлер исследовал граф с 5 вершинами (зданиями на набережной), соединёнными рёбрами-маршрутами со степенями вершин: 3, 3, 4, 2, 2. Существует ли в этом графе эйлеров цикл (маршрут, проходящий по каждому ребру ровно один раз)?"
-    },
-    {
-        "name": "Памятник Эйлеру у Академии художеств",
-        "coords": [59.9386, 30.3158],
-        "description": "Памятник, установленный в честь вклада Эйлера в мировую науку.",
-        "task": "Эйлер доказал, что для любого выпуклого многогранника выполняется формула: В - Р + Г = 2, где В - число вершин, Р - рёбер, Г - граней. Для памятника в форме прямоугольного параллелепипеда (6 граней, 8 вершин), найдите количество рёбер, используя формулу Эйлера."
-    },
-    {
-        "name": "Линии Васильевского острова",
-        "coords": [59.9500, 30.2700],
-        "description": "Регулярная планировка, отражающая рациональный подход к организации пространства.",
-        "task": "Эйлер исследовал граф с 7 вершинами (пересечения линий), где каждая вершина имеет степень 3. Можно ли пройти по всем улицам (рёбрам) ровно один раз и вернуться в исходную точку?"
-    },
-    {
-        "name": "Стрелка Васильевского острова",
-        "coords": [59.9449, 30.3070],
-        "description": "Место слияния Большой и Малой Невы, символизирующее соединение идей.",
-        "task": "Эйлер исследовал граф, моделирующий транспортные пути между 4 участками суши (вершины A, B, C, D), соединённых мостами: A-B (2 моста), A-C (1), A-D (3), B-C (1), B-D (2), C-D (1). Существует ли путь, проходящий по каждому мосту ровно один раз?"
-    },
-    {
-        "name": "Биржевая площадь",
-        "coords": [59.9460, 30.3085],
-        "description": "Место, где располагались здания Академии наук времён Эйлера.",
-        "task": "Эйлер исследовал задачу о семи кёнигсбергских мостах. Граф имеет 4 вершины со степенями: 3, 3, 3, 5. Докажите, используя теорему Эйлера, что невозможно пройти по всем мостам ровно один раз."
-    }
-    ];
+<div class="footer">
+    <p>Автор: Коротков Илья, 10А класс. Школа №416 | Данные из places.json | Нажмите на картинку для увеличения</p>
+</div>
 
-    ymaps.ready(init);
-    function init() {
-        var myMap = new ymaps.Map("map", {
+<script>
+    let currentMap = null;
+
+    async function loadPlacesFromJson() {
+        try {
+            const response = await fetch('places.json');
+            if (!response.ok) throw new Error(`HTTP ${response.status}: places.json не найден`);
+            return await response.json();
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Ошибка: не удалось загрузить places.json');
+            return [];
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function hasImage(imageUrl) {
+        return imageUrl && typeof imageUrl === 'string' && imageUrl.trim() !== '';
+    }
+
+    function openImageInNewTab(imageUrl) {
+        if (hasImage(imageUrl)) {
+            window.open(imageUrl, '_blank');
+        }
+    }
+
+    function createBuildingGallery(images) {
+        if (!images || !Array.isArray(images) || images.length === 0) return '';
+
+        const validImages = images.filter(img => hasImage(img));
+        if (validImages.length === 0) return '';
+
+        let galleryHtml = '<div class="image-scroll">';
+        validImages.forEach((img, idx) => {
+            galleryHtml += `
+                <div class="image-card" onclick="openImageInNewTab('${img.replace(/'/g, "\\'")}')">
+                    <img src="${img}" alt="Фото здания ${idx + 1}" loading="lazy" onerror="this.style.display='none'">
+                    <div class="image-caption">🏛️ Фото ${idx + 1}</div>
+                </div>
+            `;
+        });
+        galleryHtml += '</div>';
+        return galleryHtml;
+    }
+
+    function createBalloonContent(place, uniqueId) {
+        const buildingGallery = createBuildingGallery(place.imagesBuilding);
+
+        let taskImgHtml = '';
+        if (hasImage(place.taskImage)) {
+            taskImgHtml = `
+                <div class="image-card" onclick="openImageInNewTab('${place.taskImage.replace(/'/g, "\\'")}')">
+                    <img src="${place.taskImage}" alt="К задаче" onerror="this.style.display='none'">
+                    <div class="image-caption">📖 К задаче</div>
+                </div>
+            `;
+        }
+
+        let solutionImgHtml = '';
+        if (hasImage(place.solutionImage)) {
+            solutionImgHtml = `
+                <div class="image-card" onclick="openImageInNewTab('${place.solutionImage.replace(/'/g, "\\'")}')">
+                    <img src="${place.solutionImage}" alt="Решение" onerror="this.style.display='none'">
+                    <div class="image-caption">✅ Наглядное решение</div>
+                </div>
+            `;
+        }
+
+        return `
+            <div class="custom-balloon">
+                <h3>${escapeHtml(place.name)}</h3>
+                <p>${escapeHtml(place.description)}</p>
+                ${buildingGallery}
+                <div class="task-box">
+                    <strong>📐 Задача Эйлера:</strong><br> ${escapeHtml(place.task)}
+                </div>
+                ${taskImgHtml ? `<div class="image-row">${taskImgHtml}</div>` : ''}
+                <button class="btn-solution" data-solution-id="${uniqueId}">📘 Показать решение</button>
+                <div id="${uniqueId}" class="solution-area">
+                    <div class="solution-text">
+                        <strong>✍️ Решение:</strong><br> ${escapeHtml(place.solutionText || 'Решение основано на теоремах Эйлера.')}
+                    </div>
+                    ${solutionImgHtml ? `<div class="image-row">${solutionImgHtml}</div>` : ''}
+                </div>
+            </div>
+        `;
+    }
+
+    function setupGlobalSolutionHandler() {
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-solution');
+            if (!btn) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            const solutionId = btn.getAttribute('data-solution-id');
+            if (solutionId) {
+                const solutionDiv = document.getElementById(solutionId);
+                if (solutionDiv) {
+                    solutionDiv.classList.toggle('show');
+                    btn.textContent = solutionDiv.classList.contains('show') ? '🙈 Скрыть решение' : '📘 Показать решение';
+                }
+            }
+        });
+    }
+
+    window.openImageInNewTab = openImageInNewTab;
+
+    async function initMap() {
+        const places = await loadPlacesFromJson();
+        if (!places.length) return;
+
+        setupGlobalSolutionHandler();
+
+        const isMobile = window.innerWidth <= 768;
+
+        currentMap = new ymaps.Map("map", {
             center: [59.9410, 30.2900],
-            zoom: 14,
-            controls: ['zoomControl', 'typeSelector', 'fullscreenControl']
+            zoom: isMobile ? 13 : 14,
+            controls: isMobile ? ['zoomControl', 'fullscreenControl'] : ['zoomControl', 'typeSelector', 'fullscreenControl']
         });
 
-        PLACES.forEach(function(place) {
-            var placemark = new ymaps.Placemark(place.coords, {
-                balloonContentHeader: `<b>${place.name}</b>`,
-                balloonContentBody: `
-                    <p>${place.description}</p>
-                    <hr>
-                    <p><b>📐 Задача:</b> ${place.task}</p>
-                    <span class="hint">Подсказка: используйте теоремы Эйлера!</span>
-                `
+        places.forEach((place, idx) => {
+            const uniqueId = `solution-${idx}-${Date.now()}-${Math.random().toString(36).substr(2, 8)}`;
+            const balloonContent = createBalloonContent(place, uniqueId);
+
+            const placemark = new ymaps.Placemark(place.coords, {
+                balloonContentBody: balloonContent,
+                balloonContentFooter: '<span style="font-size:0.7rem;">📍 Историческое место | 📸 Нажмите на фото для увеличения</span>'
             }, {
-                preset: 'islands#blueEducationCircleIcon'
+                preset: 'islands#blueEducationCircleIcon',
+                balloonMaxWidth: Math.min(450, window.innerWidth - 40),
+                balloonPanelMaxMapArea: 0
             });
-            myMap.geoObjects.add(placemark);
+
+            currentMap.geoObjects.add(placemark);
+        });
+
+        setTimeout(() => {
+            const style = document.createElement('style');
+            style.textContent = `
+                .ymaps-2-1-1-balloon__panel {
+                    overflow-y: auto !important;
+                    max-height: 75vh !important;
+                }
+                .ymaps-2-1-1-balloon__content {
+                    overflow: visible !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }, 100);
+
+        // Адаптация карты при изменении размера окна
+        window.addEventListener('resize', function() {
+            if (currentMap) {
+                currentMap.container.fitToViewport();
+            }
         });
     }
-</script>
 
+    ymaps.ready(initMap);
+</script>
 </body>
 </html>
