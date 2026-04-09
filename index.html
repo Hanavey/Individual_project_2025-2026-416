@@ -284,12 +284,31 @@
             }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                ready: () => {
+                    MathJax.startup.defaultReady();
+                    setTimeout(() => {
+                        if (typeof MathJax.typesetPromise === 'function') {
+                            MathJax.typesetPromise();
+                        }
+                    }, 100);
+                }
+            }
+        };
+    </script>
 </head>
 <body>
 
 <header>
-    <h1>📐 Леонард Эйлер в Санкт-Петербурге</h1>
-    <p>Интерактивный проект: история, математика и визуальные подсказки</p>
+    <h1>Леонард Эйлер в Санкт-Петербурге</h1>
+    <p>Интерактивный проект: история и математика</p>
 </header>
 
 <div class="map-wrapper">
@@ -297,7 +316,7 @@
 </div>
 
 <div class="footer">
-    <p>Автор: Коротков Илья, 10А класс. Школа №416 | Данные из places.json | Нажмите на картинку для увеличения</p>
+    <p>Автор: Коротков Илья, 10А класс. ГБОУ СОШ №416</p>
 </div>
 
 <script>
@@ -377,19 +396,25 @@
             `;
         }
 
+        // Безопасная вставка текста с формулами (не экранируем $ и \)
+        const safeName = escapeHtml(place.name);
+        const safeDescription = escapeHtml(place.description);
+        const safeTask = place.task;  // НЕ экранируем — там формулы
+        const safeSolutionText = place.solutionText || 'Решение основано на теоремах Эйлера.';  // НЕ экранируем
+
         return `
             <div class="custom-balloon">
-                <h3>${escapeHtml(place.name)}</h3>
-                <p>${escapeHtml(place.description)}</p>
+                <h3>${safeName}</h3>
+                <p>${safeDescription}</p>
                 ${buildingGallery}
                 <div class="task-box">
-                    <strong>📐 Задача Эйлера:</strong><br> ${escapeHtml(place.task)}
+                    <strong>📐 Задача Эйлера:</strong><br> ${safeTask}
                 </div>
                 ${taskImgHtml ? `<div class="image-row">${taskImgHtml}</div>` : ''}
                 <button class="btn-solution" data-solution-id="${uniqueId}">📘 Показать решение</button>
                 <div id="${uniqueId}" class="solution-area">
                     <div class="solution-text">
-                        <strong>✍️ Решение:</strong><br> ${escapeHtml(place.solutionText || 'Решение основано на теоремах Эйлера.')}
+                        <strong>✍️ Решение:</strong><br> ${safeSolutionText}
                     </div>
                     ${solutionImgHtml ? `<div class="image-row">${solutionImgHtml}</div>` : ''}
                 </div>
@@ -432,6 +457,8 @@
             controls: isMobile ? ['zoomControl', 'fullscreenControl'] : ['zoomControl', 'typeSelector', 'fullscreenControl']
         });
 
+        const placemarks = [];
+
         places.forEach((place, idx) => {
             const uniqueId = `solution-${idx}-${Date.now()}-${Math.random().toString(36).substr(2, 8)}`;
             const balloonContent = createBalloonContent(place, uniqueId);
@@ -446,7 +473,11 @@
             });
 
             currentMap.geoObjects.add(placemark);
+            placemarks.push(placemark);
         });
+
+        // Подключаем обработчик открытия балуна для рендеринга формул
+        setupBalloonOpenHandler(currentMap, placemarks);
 
         setTimeout(() => {
             const style = document.createElement('style');
@@ -462,11 +493,28 @@
             document.head.appendChild(style);
         }, 100);
 
-        // Адаптация карты при изменении размера окна
         window.addEventListener('resize', function() {
             if (currentMap) {
                 currentMap.container.fitToViewport();
             }
+        });
+    }
+
+    function rerenderMathInBalloon() {
+        // Ждём, пока балун откроется и появится в DOM
+        setTimeout(() => {
+            if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }, 150);
+    }
+
+    // Перехватываем открытие балуна у всех меток
+    function setupBalloonOpenHandler(map, placemarks) {
+        placemarks.forEach(placemark => {
+            placemark.events.add('balloonopen', function() {
+                rerenderMathInBalloon();
+            });
         });
     }
 
